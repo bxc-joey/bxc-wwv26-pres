@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BBQ Experience Center — WWV 26</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange:     #FF4E02;
+      --warm-black: #211113;
+      --dark:       #292020;
+      --white:      #FFFFFF;
+      --mid-grey:   #B1A5A5;
+      --heading:    'Oswald', sans-serif;
+      --body:       'Roboto', sans-serif;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #000;
+      cursor: none;
+    }
+
+    /* ── Grain texture overlay ────────────────────────────────────────────── */
+    .grain {
+      position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 200px 200px;
+      opacity: 0.04;
+    }
+
+    /* ── Slide system ─────────────────────────────────────────────────────── */
+    .deck {
+      position: fixed; inset: 0;
+      width: 100vw; height: 100vh;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .slide {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      display: none;
+      overflow: hidden;
+    }
+
+    .slide.active {
+      display: flex;
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    /* ── Persistent UI ────────────────────────────────────────────────────── */
+    .ui-counter {
+      position: fixed;
+      right: 2.5rem; bottom: 2rem;
+      font: 300 0.8rem/1 var(--body);
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.35);
+      z-index: 100;
+      user-select: none;
+    }
+
+    .ui-tagline {
+      position: fixed;
+      left: 2.5rem; bottom: 2rem;
+      font: 300 0.75rem/1 var(--body);
+      letter-spacing: 0.15em;
+      color: rgba(177,165,165,0.5);
+      z-index: 100;
+      user-select: none;
+    }
+
+    /* custom cursor dot */
+    .cursor {
+      position: fixed;
+      width: 10px; height: 10px;
+      background: var(--orange);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease, width 0.2s ease, height 0.2s ease;
+    }
+
+    /* ── Logo ─────────────────────────────────────────────────────────────── */
+    .logo {
+      position: absolute;
+      top: 2rem; left: 2.5rem;
+      height: 52px;
+      width: auto;
+      z-index: 10;
+      object-fit: contain;
+    }
+
+    .logo-text {
+      position: absolute;
+      top: 1.9rem; left: 2.5rem;
+      font: 700 1.4rem/1 var(--heading);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      z-index: 10;
+    }
+
+    /* ── Chapter label ────────────────────────────────────────────────────── */
+    .chapter {
+      position: absolute;
+      top: 2.1rem; right: 2.5rem;
+      font: 600 0.7rem/1 var(--heading);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--orange);
+      z-index: 10;
+    }
+
+    /* ── Orange accent line (left edge) ──────────────────────────────────── */
+    .accent-line {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 5px;
+      background: var(--orange);
+      z-index: 5;
+    }
+
+    /* ── Progress bar ─────────────────────────────────────────────────────── */
+    .progress {
+      position: fixed;
+      bottom: 0; left: 0;
+      height: 3px;
+      background: var(--orange);
+      z-index: 200;
+      transition: width 0.35s ease;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SLIDE 1 — INTRO / Titelpagina (gesplitst scherm)
+    ═══════════════════════════════════════════════════════════════════════ */
+    .s1 { background: radial-gradient(ellipse at 80% 60%, rgba(120,50,10,0.55) 0%, rgba(33,17,19,1) 60%), #211113; }
+
+    .s1 .panel-orange {
+      width: 50%;
+      background: var(--orange);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5rem 3.5rem 3.5rem;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .s1 .panel-orange .logo {
+      position: absolute;
+      top: 2rem; left: 2.5rem;
+      height: 52px;
+    }
+
+    .s1 .panel-dark {
+      flex: 1;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 60% 65%, rgba(90,35,10,0.55) 0%, rgba(33,17,19,0.97) 65%),
+        #211113;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 4rem 4rem 4rem 4.5rem;
+    }
+
+    .s1 .main-title {
+      font: 700 clamp(2.8rem, 5vw, 4.2rem)/1.05 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+
+    .s1 .sub-label {
+      display: inline-block;
+      margin-top: 2.5rem;
+      background: var(--white);
+      color: var(--orange);
+      font: 700 1rem/1 var(--heading);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.5rem 1.2rem;
+    }
+
+    .s1 .orange-eyebrow {
+      font: 700 0.75rem/1 var(--heading);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 1.5rem;
+    }
+
+    .s1 .right-text {
+      font: 700 clamp(1.1rem, 2vw, 1.6rem)/1.3 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: #F5F5F5;
+      margin-top: 2rem;
+      max-width: 32ch;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SLIDE 2 — BXC In het kort (Dark stats)
+    ═══════════════════════════════════════════════════════════════════════ */
+    .s2 {
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(120,50,10,0.55) 0%, rgba(33,17,19,1) 60%),
+        #211113;
+      flex-direction: column;
+      justify-content: center;
+      padding: 6rem 7rem 5rem;
+      position: relative;
+    }
+
+    .s2::before {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 45%; height: 70%;
+      background: radial-gradient(ellipse at 80% 80%, rgba(255,78,2,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .s2 .title {
+      font: 700 clamp(2.4rem, 4.5vw, 3.8rem)/1.05 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--orange);
+      margin-bottom: 3.5rem;
+      max-width: 22ch;
+    }
+
+    .s2 .stats-row {
+      display: flex;
+      gap: 5rem;
+      align-items: flex-start;
+    }
+
+    .s2 .stat-num {
+      font: 700 clamp(4rem, 8vw, 7rem)/1 var(--heading);
+      text-transform: uppercase;
+      color: var(--white);
+      letter-spacing: -0.02em;
+    }
+
+    .s2 .stat-label {
+      font: 300 0.85rem/1.5 var(--body);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--mid-grey);
+      margin-top: 0.5rem;
+    }
+
+    .s2 .stat-divider {
+      width: 1px;
+      height: 80px;
+      background: rgba(177,165,165,0.2);
+      margin-bottom: 0.5rem;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SLIDE 3 — DE VERLEIDING
+    ═══════════════════════════════════════════════════════════════════════ */
+    .s3 {
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 0 8vh 7rem;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 75% 40%, rgba(120,50,10,0.55) 0%, rgba(33,17,19,1) 60%),
+        #211113;
+    }
+
+    .s3 .ghost-text {
+      position: absolute;
+      right: -1rem; top: 50%;
+      transform: translateY(-60%);
+      font: 700 clamp(12rem, 20vw, 18rem)/1 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: -0.04em;
+      color: rgba(255,78,2,0.18);
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .s3 .tag {
+      font: 700 0.7rem/1 var(--heading);
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 1.5rem;
+    }
+
+    .s3 .main {
+      font: 700 clamp(2.6rem, 5vw, 4.4rem)/1.08 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--white);
+      max-width: 20ch;
+      margin-bottom: 2rem;
+    }
+
+    .s3 .accent {
+      font: 600 1.1rem/1 var(--heading);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--orange);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SLIDE 4 — DE CRASH
+    ═══════════════════════════════════════════════════════════════════════ */
+    .s4 {
+      flex-direction: column;
+      justify-content: center;
+      padding: 6rem 7rem;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 20% 80%, rgba(120,50,10,0.55) 0%, rgba(33,17,19,1) 60%),
+        #211113;
+    }
+
+    .s4::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0,0,0,0.03) 3px,
+        rgba(0,0,0,0.03) 4px
+      );
+      pointer-events: none;
+    }
+
+    .s4 .date-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .s4 .date-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--orange);
+      animation: pulse 1.5s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    .s4 .date-text {
+      font: 600 0.7rem/1 var(--heading);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--orange);
+    }
+
+    .s4 .main {
+      font: 700 clamp(3rem, 5.5vw, 5rem)/1.05 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--white);
+      max-width: 18ch;
+      margin-bottom: 2rem;
+    }
+
+    .s4 .main span {
+      color: var(--orange);
+    }
+
+    .s4 .sub {
+      font: 300 1rem/1.7 var(--body);
+      color: var(--mid-grey);
+      max-width: 38ch;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SLIDE 5 — DE REALISATIE
+    ═══════════════════════════════════════════════════════════════════════ */
+    .s5 {
+      flex-direction: column;
+      justify-content: center;
+      padding: 6rem 7rem;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 20% 80%, rgba(120,50,10,0.55) 0%, rgba(33,17,19,1) 60%),
+        #211113;
+    }
+
+    .s5::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0,0,0,0.03) 3px,
+        rgba(0,0,0,0.03) 4px
+      );
+      pointer-events: none;
+    }
+
+    .s5 .divider {
+      width: 60px; height: 4px;
+      background: var(--orange);
+      margin-bottom: 2.5rem;
+    }
+
+    .s5 .main {
+      font: 700 clamp(3rem, 5.5vw, 5rem)/1.05 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--white);
+      max-width: 22ch;
+      margin-bottom: 1.5rem;
+    }
+
+    .s5 .main em {
+      font-style: normal;
+      color: var(--orange);
+    }
+
+    .s5 .storm-label {
+      margin-top: 2.5rem;
+      margin-bottom: 1.2rem;
+      font: 700 clamp(0.6rem, 0.85vw, 0.75rem)/1 var(--heading);
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--orange);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .s5 .storm-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,78,2,0.25);
+    }
+
+    .s5 .perfect-storm {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .s5 .pill {
+      font: 600 0.65rem/1 var(--heading);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.4rem 0.9rem;
+      border: 1px solid rgba(255,78,2,0.3);
+      color: #F5F5F5;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SLIDE 6 — HET PLAN (Statement oranje)
+    ═══════════════════════════════════════════════════════════════════════ */
+    .s6 {
+      background: var(--orange);
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 5rem 7rem;
+      position: relative;
+    }
+
+    .s6 .giant {
+      font: 700 clamp(8rem, 18vw, 16rem)/0.9 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      line-height: 0.88;
+    }
+
+    .s6 .giant-dark {
+      font: 700 clamp(8rem, 18vw, 16rem)/0.9 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      color: #211113;
+      line-height: 0.88;
+    }
+
+    .s6 .sub {
+      margin-top: 3rem;
+      font: 300 1rem/1.6 var(--body);
+      color: rgba(33,17,19,0.75);
+      letter-spacing: 0.05em;
+    }
+
+    .s6 .logo-dark {
+      position: absolute;
+      top: 2rem; left: 2.5rem;
+      height: 34px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SLIDE 7/8/9 — INZICHTEN (shared base)
+    ═══════════════════════════════════════════════════════════════════════ */
+    .s-insight {
+      flex-direction: column;
+      justify-content: center;
+      padding: 6rem 7rem;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 80% 60%, rgba(120,50,10,0.55) 0%, rgba(33,17,19,1) 60%),
+        #211113;
+      overflow: hidden;
+    }
+
+    .s-insight .ghost-num {
+      position: absolute;
+      right: 3rem; top: 50%;
+      transform: translateY(-50%);
+      font: 700 clamp(14rem, 25vw, 22rem)/1 var(--heading);
+      text-transform: uppercase;
+      color: rgba(255,78,2,0.18);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .s-insight .insight-num {
+      font: 700 0.7rem/1 var(--heading);
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 1.5rem;
+    }
+
+    .s-insight .main {
+      font: 700 clamp(2.2rem, 4vw, 3.5rem)/1.1 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--white);
+      max-width: 24ch;
+      margin-bottom: 2rem;
+    }
+
+    .s-insight .main em {
+      font-style: normal;
+      color: var(--orange);
+    }
+
+    .s-insight .sub {
+      font: 300 0.95rem/1.75 var(--body);
+      color: var(--mid-grey);
+      max-width: 44ch;
+    }
+
+    .s-insight .divider {
+      width: 50px; height: 3px;
+      background: var(--orange);
+      margin-bottom: 2rem;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SLIDE 10 — DE PAYOFF
+    ═══════════════════════════════════════════════════════════════════════ */
+    .s10 {
+      flex-direction: column;
+      justify-content: center;
+      padding: 5rem 7rem;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(120,50,10,0.55) 0%, rgba(33,17,19,1) 60%),
+        #211113;
+    }
+
+    .s10 .title {
+      font: 700 clamp(1.6rem, 3vw, 2.4rem)/1.1 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--orange);
+      margin-bottom: 3rem;
+    }
+
+    .s10 .years {
+      display: flex;
+      gap: 0;
+      align-items: stretch;
+      margin-bottom: 3.5rem;
+    }
+
+    .s10 .year-col {
+      flex: 1;
+      padding: 2.5rem 2rem;
+      border-left: 1px solid rgba(177,165,165,0.15);
+    }
+
+    .s10 .year-col:first-child { border-left: none; }
+
+    .s10 .year-num {
+      font: 700 1.5rem/1 var(--heading);
+      letter-spacing: 0.1em;
+      color: var(--orange);
+      margin-bottom: 0.75rem;
+    }
+
+    .s10 .year-word {
+      font: 700 clamp(2rem, 4vw, 3.5rem)/1 var(--heading);
+      text-transform: uppercase;
+      color: var(--white);
+      letter-spacing: -0.01em;
+    }
+
+    .s10 .year-sub {
+      font: 300 0.8rem/1.5 var(--body);
+      color: var(--mid-grey);
+      margin-top: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    .s10 .payoff-bottom {
+      font: 700 clamp(2rem, 3.5vw, 3rem)/1.1 var(--heading);
+      text-transform: uppercase;
+      color: var(--white);
+      letter-spacing: 0.02em;
+    }
+
+    .s10 .payoff-bottom span { color: var(--orange); }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SLIDE 11 — KEY TAKEAWAY
+    ═══════════════════════════════════════════════════════════════════════ */
+    .s11 {
+      background: var(--orange);
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 4rem 5rem;
+      position: relative;
+    }
+
+    .s11 .eyebrow {
+      font: 600 0.7rem/1 var(--heading);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 2.5rem;
+    }
+
+    .s11 .line1 {
+      font: 700 clamp(3.5rem, 7vw, 6.5rem)/1 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      color: var(--white);
+      margin-bottom: 0.2rem;
+    }
+
+    .s11 .line2 {
+      font: 700 clamp(3.5rem, 7vw, 6.5rem)/1 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      color: #211113;
+      margin-bottom: 3.5rem;
+    }
+
+    .s11 .divider-white {
+      width: 50px; height: 3px;
+      background: rgba(255,255,255,0.5);
+      margin-bottom: 2rem;
+    }
+
+    .s11 .content-logo {
+      height: 48px;
+      width: auto;
+      margin-bottom: 2rem;
+      display: block;
+    }
+
+    .s11 .contact-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem 3rem;
+    }
+
+    .s11 .contact-list > div {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+    }
+
+    .s11 .contact-icon {
+      font: 700 0.6rem/1 var(--heading);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      flex-shrink: 0;
+    }
+
+    .s11 .contact-val {
+      font: 300 clamp(0.85rem, 1.1vw, 1rem)/1.4 var(--body);
+      color: rgba(255,255,255,0.9);
+    }
+
+    .s11 .logo-s11 {
+      position: absolute;
+      top: 2rem; left: 2.5rem;
+      height: 34px;
+    }
+
+    /* (transitions handled via fadeIn keyframe) */
+  </style>
+</head>
+<body>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+
+  <!-- Progress bar -->
+  <div class="progress" id="progress"></div>
+
+  <!-- Persistent UI -->
+  <div class="ui-tagline">your bbq best friend</div>
+  <div class="ui-counter"><span id="cur">1</span> / 11</div>
+
+  <div class="deck" id="deck">
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 1 — INTRO
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s1 active">
+      <div class="grain"></div>
+
+      <div class="panel-orange">
+        <img class="logo" src="./assets/Logo_wit@4x.png"
+             alt="BBQ Experience Center"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+        <span class="logo-text" style="color:#fff; display:none;">BXC</span>
+
+        <div class="orange-eyebrow">WWV 26</div>
+        <div class="main-title">VAN RECORD-<br>GROEI NAAR<br>RODE CIJFERS..<br>EN HOE WE<br>TERUG KNOKTEN<br>NAAR WINST.</div>
+        <div class="sub-label">JOEY BUYS — CHIEF BBQ OFFICER</div>
+      </div>
+
+      <div class="panel-dark">
+        <div class="grain" style="opacity:0.06;"></div>
+        <div class="chapter">BBQ EXPERIENCE CENTER</div>
+        <p class="right-text">
+          Geen blauwdruk.<br>Wel een eerlijk verhaal over ondernemen, sturen en mensen.
+        </p>
+      </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 2 — BXC IN HET KORT
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s2">
+      <div class="grain"></div>
+      <img class="logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter">INTRO</div>
+
+      <div class="title">4 VESTIGINGEN.<br>70 MENSEN.<br>1 MISSIE.</div>
+      <div class="stats-row">
+        <div>
+          <div class="stat-num">2</div>
+          <div class="stat-label">Landen</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div>
+          <div class="stat-num">4</div>
+          <div class="stat-label">Shopping Awards</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div>
+          <div class="stat-num">10</div>
+          <div class="stat-label">Jaar</div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 3 — DE VERLEIDING
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s3">
+      <div class="grain"></div>
+
+      <img class="logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter">DE VERLEIDING</div>
+      <div class="ghost-text">GROEI</div>
+
+      <div class="tag">Wanneer alles lukt</div>
+      <div class="main">ALS JE GROEIT,<br>VOELT ALLES<br>ALS EEN<br><span style="color:var(--orange)">GOED IDEE.</span></div>
+      <div class="accent">+40% GROEI &mdash; JAAR NA JAAR</div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 4 — DE CRASH
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s4">
+      <div class="grain" style="opacity:0.07;"></div>
+
+      <img class="logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter">DE CRASH</div>
+
+      <div class="date-badge">
+        <div class="date-dot"></div>
+        <div class="date-text">Eind 2024 — Begin 2025</div>
+      </div>
+
+      <div class="main">WE GINGEN<br>VERLIES<br>MAKEN.<br><span>EN DIK OOK.</span></div>
+      <div class="sub">Kunnen we de salarissen nog betalen? Gaan we failliet? Pff al de gezinnen van mijn collega's..</div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 5 — DE REALISATIE
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s5">
+      <div class="grain"></div>
+
+      <img class="logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter">DE REALISATIE</div>
+
+      <div class="divider"></div>
+      <div class="main">WE STUURDEN<br>OP <em>OMZET</em>.<br>NIET OP<br><em>WAARDE</em>.</div>
+
+      <div class="storm-label">Perfect Storm</div>
+      <div class="perfect-storm">
+        <div class="pill">Overhead gegroeid</div>
+        <div class="pill">Korting weggegeven</div>
+        <div class="pill">Te veel geïnvesteerd</div>
+        <div class="pill">Financieel niet in control</div>
+      </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 6 — HET PLAN (Statement oranje)
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s6">
+      <div class="grain" style="opacity:0.06;"></div>
+
+      <img class="logo-dark logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter" style="color:#211113; opacity:0.6;">HET PLAN</div>
+
+      <div class="giant">GRILL</div>
+      <div class="giant-dark">&amp; SAVE.</div>
+      <div class="sub" style="font:300 1rem/1.6 var(--body); color:rgba(33,17,19,0.65); margin-top:2.5rem; margin-left:0.6rem;">
+        Kosten omlaag. Marge omhoog. Eigenlijk best simpel 😉
+      </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 7 — INZICHT 1
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s-insight">
+      <div class="grain"></div>
+
+      <img class="logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter">DE INZICHTEN</div>
+      <div class="ghost-num">01</div>
+
+      <div class="insight-num">Inzicht 01 / 03</div>
+      <div class="divider"></div>
+      <div class="main">WINST IS GEEN<br>MANAGEMENT<br>TAAK.<br>HET IS <em>GEDRAG</em>.</div>
+      <div class="sub">Iedereen in de organisatie is verantwoordelijk en moet bewust zijn voor succes. Dat vergt aanpassingsvermogen.</div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 8 — INZICHT 2
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s-insight">
+      <div class="grain"></div>
+
+      <img class="logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter">DE INZICHTEN</div>
+      <div class="ghost-num">02</div>
+
+      <div class="insight-num">Inzicht 02 / 03</div>
+      <div class="divider"></div>
+      <div class="main">ONZEKERHEID<br><em>SLOOPT</em><br>ENERGIE.<br>TRANSPARANTIE<br>GEEFT RUST.</div>
+      <div class="sub">Communiceer open met iedereen: je collega's, leveranciers, financierders en niet in laatste plaats je persoonlijke omgeving.</div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 9 — INZICHT 3
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s-insight">
+      <div class="grain"></div>
+
+      <img class="logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter">DE INZICHTEN</div>
+      <div class="ghost-num">03</div>
+
+      <div class="insight-num">Inzicht 03 / 03</div>
+      <div class="divider"></div>
+      <div class="main">SOMMIGE<br>WINSTGEVENDE<br>IDEEËN <em>KOSTEN</em><br>JE ORGANISATIE<br><em>MEER</em> DAN ZE<br>OPLEVEREN.</div>
+      <div class="sub">Kies de juiste metrics, niet alles is ROI.</div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 10 — DE PAYOFF
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s10">
+      <div class="grain"></div>
+
+      <img class="logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter">DE PAYOFF</div>
+
+      <div class="title">Drie jaar. Drie fases.</div>
+
+      <div class="years">
+        <div class="year-col">
+          <div class="year-num">2025</div>
+          <div class="year-word">GEZOND.</div>
+          <div class="year-sub">Financieel herstel.<br>Goed afgesloten.</div>
+        </div>
+        <div class="year-col">
+          <div class="year-num">2026</div>
+          <div class="year-word">MEER.</div>
+          <div class="year-sub">Meer met dezelfde<br>organisatie.</div>
+        </div>
+        <div class="year-col">
+          <div class="year-num">2027</div>
+          <div class="year-word">GAS.</div>
+          <div class="year-sub">Gaspedaal<br>verder intrappen.</div>
+        </div>
+      </div>
+
+      <div class="payoff-bottom">
+        Onze beste maand ooit was <span>mei 2025</span>.<br>
+        Midden in onze crisis.
+      </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 11 — KEY TAKEAWAY
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s11">
+      <div class="grain" style="opacity:0.06;"></div>
+
+      <img class="logo-s11 logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter" style="color:rgba(33,17,19,0.5);">KEY TAKEAWAY</div>
+
+      <img class="content-logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="eyebrow">Vergeet dit niet</div>
+      <div class="line1">GROEI MAAKT INDRUK.</div>
+      <div class="line2">WINST GEEFT JE TOEKOMST.</div>
+
+      <div class="divider-white"></div>
+      <div class="contact-list">
+        <div>
+          <div class="contact-icon">mail</div>
+          <div class="contact-val">joey@funcookingonline.nl</div>
+        </div>
+        <div>
+          <div class="contact-icon">insta</div>
+          <div class="contact-val">@bbqexperiencecenter</div>
+        </div>
+        <div>
+          <div class="contact-icon">in</div>
+          <div class="contact-val">joeybuys</div>
+        </div>
+        <div>
+          <div class="contact-icon">web</div>
+          <div class="contact-val">www.bbqexperiencecenter.nl · www.bbqexperiencecenter.be</div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /deck -->
+
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const counter = document.getElementById('cur');
+    const progress = document.getElementById('progress');
+    const total = slides.length;
+    let current = 0;
+    let isAnimating = false;
+
+    function goTo(n) {
+      if (isAnimating) return;
+      if (n < 0 || n >= total) return;
+      isAnimating = true;
+
+      slides[current].classList.remove('active');
+      slides[n].classList.add('active');
+
+      current = n;
+      counter.textContent = current + 1;
+      progress.style.width = ((current + 1) / total * 100) + '%';
+
+      setTimeout(() => { isAnimating = false; }, 320);
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    // Click to advance (ignore clicks on nav area)
+    document.addEventListener('click', (e) => {
+      if (e.clientX > window.innerWidth * 0.08) next();
+      else prev();
+    });
+
+    // Keyboard
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'ArrowDown') { e.preventDefault(); next(); }
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    { e.preventDefault(); prev(); }
+    });
+
+    // Touch / swipe
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+    document.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 50) { dx < 0 ? next() : prev(); }
+    });
+
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+    });
+
+    // Init progress
+    progress.style.width = (1 / total * 100) + '%';
+  </script>
+</body>
+</html>

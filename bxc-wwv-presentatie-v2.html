@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BBQ Experience Center — WWV 26 (16:9)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── Reset ─────────────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange:     #FF4E02;
+      --warm-black: #211113;
+      --dark:       #292020;
+      --white:      #FFFFFF;
+      --mid-grey:   #B1A5A5;
+      --heading:    'Oswald', sans-serif;
+      --body:       'Roboto', sans-serif;
+    }
+
+    /* ── Stage: centers the 1920×1080 deck, letterboxes on non-16:9 screens ─ */
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: none;
+    }
+
+    /* ── The fixed-size 16:9 canvas ─────────────────────────────────────────  */
+    .deck {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      flex-shrink: 0;
+      transform-origin: center center;
+      font-size: 16px; /* rem anchor */
+    }
+
+    /* ── Grain texture ──────────────────────────────────────────────────────── */
+    .grain {
+      position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 200px 200px;
+      opacity: 0.04;
+    }
+
+    /* ── Slide system ───────────────────────────────────────────────────────── */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .slide {
+      position: absolute; inset: 0;
+      width: 1920px; height: 1080px;
+      display: none;
+      overflow: hidden;
+    }
+
+    .slide.active {
+      display: flex;
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    /* ── Persistent UI (lives inside .deck, position absolute) ─────────────── */
+    .ui-counter {
+      position: absolute;
+      right: 40px; bottom: 32px;
+      font: 300 13px/1 var(--body);
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.35);
+      z-index: 100;
+      user-select: none;
+    }
+
+    .ui-tagline {
+      position: absolute;
+      left: 40px; bottom: 32px;
+      font: 300 12px/1 var(--body);
+      letter-spacing: 0.15em;
+      color: rgba(177,165,165,0.5);
+      z-index: 100;
+      user-select: none;
+    }
+
+    /* ── Progress bar (inside deck) ─────────────────────────────────────────── */
+    .progress {
+      position: absolute;
+      bottom: 0; left: 0;
+      height: 4px;
+      background: var(--orange);
+      z-index: 200;
+      transition: width 0.35s ease;
+    }
+
+    /* ── Custom cursor (fixed to viewport, not deck) ─────────────────────────  */
+    .cursor {
+      position: fixed;
+      width: 10px; height: 10px;
+      background: var(--orange);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+    }
+
+    /* ── Logo ───────────────────────────────────────────────────────────────── */
+    .logo {
+      position: absolute;
+      top: 32px; left: 40px;
+      height: 56px;
+      width: auto;
+      z-index: 10;
+      object-fit: contain;
+    }
+
+    /* ── Chapter label ──────────────────────────────────────────────────────── */
+    .chapter {
+      position: absolute;
+      top: 40px; right: 40px;
+      font: 600 11px/1 var(--heading);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--orange);
+      z-index: 10;
+    }
+
+    /* ── Orange accent line ─────────────────────────────────────────────────── */
+    .accent-line {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 6px;
+      background: var(--orange);
+      z-index: 5;
+    }
+
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SLIDE 1 — Titelpagina (gesplitst)
+    ═══════════════════════════════════════════════════════════════════════ */
+    .s1 { background: radial-gradient(ellipse at 80% 60%, rgba(120,50,10,0.55) 0%, rgba(33,17,19,1) 60%), #211113; }
+
+    .s1 .panel-orange {
+      width: 50%;
+      background: var(--orange);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 64px 64px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .s1 .panel-dark {
+      flex: 1;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 60% 65%, rgba(90,35,10,0.55) 0%, rgba(33,17,19,0.97) 65%),
+        #211113;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 80px 80px 96px;
+    }
+
+    .s1 .orange-eyebrow {
+      font: 700 12px/1 var(--heading);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 32px;
+    }
+
+    .s1 .main-title {
+      font: 700 72px/1.05 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--white);
+    }
+
+    .s1 .sub-label {
+      display: inline-block;
+      margin-top: 48px;
+      background: var(--white);
+      color: var(--orange);
+      font: 700 16px/1 var(--heading);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 10px 20px;
+    }
+
+    .s1 .right-text {
+      font: 700 26px/1.3 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: #F5F5F5;
+      margin-top: 40px;
+      max-width: 32ch;
+    }
+
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SLIDE 2 — BXC Stats
+    ═══════════════════════════════════════════════════════════════════════ */
+    .s2 {
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(120,50,10,0.55) 0%, rgba(33,17,19,1) 60%),
+        #211113;
+      flex-direction: column;
+      justify-content: center;
+      padding: 96px 160px 80px;
+      position: relative;
+    }
+
+    .s2::before {
+      content: '';
+      position: absolute; bottom: 0; right: 0;
+      width: 45%; height: 70%;
+      background: radial-gradient(ellipse at 80% 80%, rgba(255,78,2,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .s2 .title {
+      font: 700 56px/1.05 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--orange);
+      margin-bottom: 64px;
+    }
+
+    .s2 .stats-row { display: flex; gap: 80px; align-items: flex-start; }
+
+    .s2 .stat-num {
+      font: 700 112px/1 var(--heading);
+      color: var(--white);
+      letter-spacing: -0.02em;
+    }
+
+    .s2 .stat-label {
+      font: 300 14px/1.5 var(--body);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--mid-grey);
+      margin-top: 12px;
+    }
+
+    .s2 .stat-divider {
+      width: 1px; height: 100px;
+      background: rgba(177,165,165,0.2);
+      margin-bottom: 8px;
+    }
+
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SLIDE 3 — De Verleiding
+    ═══════════════════════════════════════════════════════════════════════ */
+    .s3 {
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 0 120px 160px;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 75% 40%, rgba(120,50,10,0.55) 0%, rgba(33,17,19,1) 60%),
+        #211113;
+    }
+
+    .s3 .ghost-text {
+      position: absolute;
+      right: -20px; top: 50%;
+      transform: translateY(-60%);
+      font: 700 320px/1 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: -0.04em;
+      color: rgba(255,78,2,0.18);
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+      z-index: 1;
+    }
+
+    .s3 .tag {
+      font: 700 11px/1 var(--heading);
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 24px;
+      position: relative; z-index: 2;
+    }
+
+    .s3 .main {
+      font: 700 74px/1.08 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--white);
+      max-width: 20ch;
+      margin-bottom: 32px;
+      position: relative; z-index: 2;
+    }
+
+    .s3 .accent {
+      font: 600 20px/1 var(--heading);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--orange);
+      position: relative; z-index: 2;
+    }
+
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SLIDE 4 — De Crash
+    ═══════════════════════════════════════════════════════════════════════ */
+    .s4 {
+      flex-direction: column;
+      justify-content: center;
+      padding: 96px 160px;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 20% 80%, rgba(120,50,10,0.55) 0%, rgba(33,17,19,1) 60%),
+        #211113;
+    }
+
+    .s4::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.03) 3px, rgba(0,0,0,0.03) 4px);
+      pointer-events: none;
+    }
+
+    .s4 .date-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 48px;
+      position: relative; z-index: 2;
+    }
+
+    .s4 .date-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--orange);
+      animation: pulse 1.5s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    .s4 .date-text {
+      font: 600 11px/1 var(--heading);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--orange);
+    }
+
+    .s4 .main {
+      font: 700 80px/1.05 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--white);
+      max-width: 18ch;
+      margin-bottom: 40px;
+      position: relative; z-index: 2;
+    }
+
+    .s4 .main span { color: var(--orange); }
+
+    .s4 .sub {
+      font: 300 18px/1.7 var(--body);
+      color: var(--mid-grey);
+      max-width: 40ch;
+      position: relative; z-index: 2;
+    }
+
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SLIDE 5 — De Realisatie
+    ═══════════════════════════════════════════════════════════════════════ */
+    .s5 {
+      flex-direction: column;
+      justify-content: center;
+      padding: 96px 160px;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 20% 80%, rgba(120,50,10,0.55) 0%, rgba(33,17,19,1) 60%),
+        #211113;
+    }
+
+    .s5::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.03) 3px, rgba(0,0,0,0.03) 4px);
+      pointer-events: none;
+    }
+
+    .s5 .divider { width: 70px; height: 5px; background: var(--orange); margin-bottom: 40px; }
+
+    .s5 .main {
+      font: 700 80px/1.05 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--white);
+      max-width: 22ch;
+      margin-bottom: 28px;
+    }
+
+    .s5 .main em { font-style: normal; color: var(--orange); }
+
+    .s5 .storm-label {
+      margin-top: 40px;
+      margin-bottom: 20px;
+      font: 700 11px/1 var(--heading);
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--orange);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .s5 .storm-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,78,2,0.25);
+    }
+
+    .s5 .perfect-storm {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .s5 .pill {
+      font: 600 11px/1 var(--heading);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 8px 16px;
+      border: 1px solid rgba(255,78,2,0.35);
+      color: #F5F5F5;
+    }
+
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SLIDE 6 — Het Plan (oranje statement)
+    ═══════════════════════════════════════════════════════════════════════ */
+    .s6 {
+      background: var(--orange);
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 80px 112px;
+      position: relative;
+    }
+
+    .s6 .giant {
+      font: 700 256px/0.88 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      color: var(--white);
+    }
+
+    .s6 .giant-dark {
+      font: 700 256px/0.88 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      color: #211113;
+    }
+
+    .s6 .sub {
+      margin-top: 48px;
+      font: 300 18px/1.6 var(--body);
+      color: rgba(33,17,19,0.65);
+      letter-spacing: 0.05em;
+    }
+
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SLIDE 7/8/9 — Inzichten
+    ═══════════════════════════════════════════════════════════════════════ */
+    .s-insight {
+      flex-direction: column;
+      justify-content: center;
+      padding: 96px 160px;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 80% 60%, rgba(120,50,10,0.55) 0%, rgba(33,17,19,1) 60%),
+        #211113;
+      overflow: hidden;
+    }
+
+    .s-insight .ghost-num {
+      position: absolute;
+      right: 48px; top: 50%;
+      transform: translateY(-50%);
+      font: 700 352px/1 var(--heading);
+      color: rgba(255,78,2,0.18);
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
+    }
+
+    .s-insight .insight-num {
+      font: 700 11px/1 var(--heading);
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 24px;
+      position: relative; z-index: 2;
+    }
+
+    .s-insight .divider {
+      width: 60px; height: 4px;
+      background: var(--orange);
+      margin-bottom: 32px;
+      position: relative; z-index: 2;
+    }
+
+    .s-insight .main {
+      font: 700 54px/1.1 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--white);
+      max-width: 24ch;
+      margin-bottom: 32px;
+      position: relative; z-index: 2;
+    }
+
+    .s-insight .main em { font-style: normal; color: var(--orange); }
+
+    .s-insight .sub {
+      font: 300 17px/1.75 var(--body);
+      color: var(--mid-grey);
+      max-width: 48ch;
+      position: relative; z-index: 2;
+    }
+
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SLIDE 10 — De Payoff
+    ═══════════════════════════════════════════════════════════════════════ */
+    .s10 {
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 112px;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(120,50,10,0.55) 0%, rgba(33,17,19,1) 60%),
+        #211113;
+    }
+
+    .s10 .title {
+      font: 700 38px/1.1 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--orange);
+      margin-bottom: 48px;
+    }
+
+    .s10 .years { display: flex; gap: 0; align-items: stretch; margin-bottom: 56px; }
+
+    .s10 .year-col {
+      flex: 1;
+      padding: 40px 32px;
+      border-left: 1px solid rgba(177,165,165,0.15);
+    }
+
+    .s10 .year-col:first-child { border-left: none; }
+
+    .s10 .year-num {
+      font: 700 24px/1 var(--heading);
+      letter-spacing: 0.1em;
+      color: var(--orange);
+      margin-bottom: 12px;
+    }
+
+    .s10 .year-word {
+      font: 700 56px/1 var(--heading);
+      text-transform: uppercase;
+      color: var(--white);
+      letter-spacing: -0.01em;
+    }
+
+    .s10 .year-sub {
+      font: 300 14px/1.5 var(--body);
+      color: var(--mid-grey);
+      margin-top: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    .s10 .payoff-bottom {
+      font: 700 48px/1.15 var(--heading);
+      text-transform: uppercase;
+      color: var(--white);
+      letter-spacing: 0.02em;
+    }
+
+    .s10 .payoff-bottom span { color: var(--orange); }
+
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       SLIDE 11 — Key Takeaway
+    ═══════════════════════════════════════════════════════════════════════ */
+    .s11 {
+      background: var(--orange);
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 64px 80px;
+      position: relative;
+    }
+
+    .s11 .eyebrow {
+      font: 600 11px/1 var(--heading);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 48px;
+    }
+
+    .s11 .line1 {
+      font: 700 104px/1 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .s11 .line2 {
+      font: 700 104px/1 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      color: #211113;
+      margin-bottom: 64px;
+    }
+
+    .s11 .divider-white {
+      width: 60px; height: 3px;
+      background: rgba(255,255,255,0.5);
+      margin-bottom: 32px;
+    }
+
+    .s11 .content-logo {
+      height: 56px;
+      width: auto;
+      margin-bottom: 32px;
+      display: block;
+    }
+
+    .s11 .contact-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px 48px;
+    }
+
+    .s11 .contact-list > div {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .s11 .contact-icon {
+      font: 700 10px/1 var(--heading);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      flex-shrink: 0;
+    }
+
+    .s11 .contact-val {
+      font: 300 16px/1.4 var(--body);
+      color: rgba(255,255,255,0.9);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Custom cursor (viewport-relative) -->
+  <div class="cursor" id="cursor"></div>
+
+  <div class="deck" id="deck">
+
+    <!-- Persistent UI — inside deck so they scale with it -->
+    <div class="progress" id="progress"></div>
+    <div class="ui-tagline">your bbq best friend</div>
+    <div class="ui-counter"><span id="cur">1</span> / 11</div>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 1 — INTRO
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s1 active">
+      <div class="grain"></div>
+
+      <div class="panel-orange">
+        <img class="logo" src="./assets/Logo_wit@4x.png"
+             alt="BBQ Experience Center"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+        <span style="display:none; position:absolute; top:32px; left:40px; font:700 22px/1 var(--heading); letter-spacing:0.15em; text-transform:uppercase; color:#fff; z-index:10;">BXC</span>
+
+        <div class="orange-eyebrow">WWV 26</div>
+        <div class="main-title">VAN RECORD-<br>GROEI NAAR<br>RODE CIJFERS..<br>EN HOE WE<br>TERUG KNOKTEN<br>NAAR WINST.</div>
+        <div class="sub-label">JOEY BUYS — CHIEF BBQ OFFICER</div>
+      </div>
+
+      <div class="panel-dark">
+        <div class="grain" style="opacity:0.06;"></div>
+        <div class="chapter">BBQ EXPERIENCE CENTER</div>
+        <p class="right-text">
+          Geen blauwdruk.<br>Wel een eerlijk verhaal over ondernemen, sturen en mensen.
+        </p>
+      </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 2 — BXC IN HET KORT
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s2">
+      <div class="grain"></div>
+      <img class="logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter">INTRO</div>
+
+      <div class="title">4 VESTIGINGEN.<br>70 MENSEN.<br>1 MISSIE.</div>
+      <div class="stats-row">
+        <div>
+          <div class="stat-num">2</div>
+          <div class="stat-label">Landen</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div>
+          <div class="stat-num">4</div>
+          <div class="stat-label">Shopping Awards</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div>
+          <div class="stat-num">10</div>
+          <div class="stat-label">Jaar</div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 3 — DE VERLEIDING
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s3">
+      <div class="grain"></div>
+
+      <img class="logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter">DE VERLEIDING</div>
+      <div class="ghost-text">GROEI</div>
+
+      <div class="tag">Wanneer alles lukt</div>
+      <div class="main">ALS JE GROEIT,<br>VOELT ALLES<br>ALS EEN<br><span style="color:var(--orange)">GOED IDEE.</span></div>
+      <div class="accent">+40% GROEI &mdash; JAAR NA JAAR</div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 4 — DE CRASH
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s4">
+      <div class="grain" style="opacity:0.07;"></div>
+
+      <img class="logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter">DE CRASH</div>
+
+      <div class="date-badge">
+        <div class="date-dot"></div>
+        <div class="date-text">Eind 2024 — Begin 2025</div>
+      </div>
+
+      <div class="main">WE GINGEN<br>VERLIES<br>MAKEN.<br><span>EN DIK OOK.</span></div>
+      <div class="sub">Kunnen we de salarissen nog betalen? Gaan we failliet? Pff al de gezinnen van mijn collega's..</div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 5 — DE REALISATIE
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s5">
+      <div class="grain"></div>
+
+      <img class="logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter">DE REALISATIE</div>
+
+      <div class="divider"></div>
+      <div class="main">WE STUURDEN<br>OP <em>OMZET</em>.<br>NIET OP<br><em>WAARDE</em>.</div>
+
+      <div class="storm-label">Perfect Storm</div>
+      <div class="perfect-storm">
+        <div class="pill">Overhead gegroeid</div>
+        <div class="pill">Korting weggegeven</div>
+        <div class="pill">Te veel geïnvesteerd</div>
+        <div class="pill">Financieel niet in control</div>
+      </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 6 — HET PLAN
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s6">
+      <div class="grain" style="opacity:0.06;"></div>
+
+      <img class="logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter" style="color:#211113; opacity:0.6;">HET PLAN</div>
+
+      <div class="giant">GRILL</div>
+      <div class="giant-dark">&amp; SAVE.</div>
+      <div class="sub" style="margin-left:10px;">Kosten omlaag. Marge omhoog. Eigenlijk best simpel 😉</div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 7 — INZICHT 1
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s-insight">
+      <div class="grain"></div>
+      <img class="logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter">DE INZICHTEN</div>
+      <div class="ghost-num">01</div>
+
+      <div class="insight-num">Inzicht 01 / 03</div>
+      <div class="divider"></div>
+      <div class="main">WINST IS GEEN<br>MANAGEMENT TAAK.<br>HET IS <em>GEDRAG</em>.</div>
+      <div class="sub">Iedereen in de organisatie is verantwoordelijk en moet bewust zijn voor succes. Dat vergt aanpassingsvermogen.</div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 8 — INZICHT 2
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s-insight">
+      <div class="grain"></div>
+      <img class="logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter">DE INZICHTEN</div>
+      <div class="ghost-num">02</div>
+
+      <div class="insight-num">Inzicht 02 / 03</div>
+      <div class="divider"></div>
+      <div class="main">ONZEKERHEID<br><em>SLOOPT</em><br>ENERGIE.<br>TRANSPARANTIE<br>GEEFT RUST.</div>
+      <div class="sub">Communiceer open met iedereen: je collega's, leveranciers, financierders en niet in laatste plaats je persoonlijke omgeving.</div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 9 — INZICHT 3
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s-insight">
+      <div class="grain"></div>
+      <img class="logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter">DE INZICHTEN</div>
+      <div class="ghost-num">03</div>
+
+      <div class="insight-num">Inzicht 03 / 03</div>
+      <div class="divider"></div>
+      <div class="main">SOMMIGE<br>WINSTGEVENDE<br>IDEEËN <em>KOSTEN</em><br>JE ORGANISATIE<br><em>MEER</em> DAN ZE<br>OPLEVEREN.</div>
+      <div class="sub">Kies de juiste metrics, niet alles is ROI.</div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 10 — DE PAYOFF
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s10">
+      <div class="grain"></div>
+
+      <img class="logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter">DE PAYOFF</div>
+
+      <div class="title">Drie jaar. Drie fases.</div>
+
+      <div class="years">
+        <div class="year-col">
+          <div class="year-num">2025</div>
+          <div class="year-word">GEZOND.</div>
+          <div class="year-sub">Financieel herstel.<br>Goed afgesloten.</div>
+        </div>
+        <div class="year-col">
+          <div class="year-num">2026</div>
+          <div class="year-word">MEER.</div>
+          <div class="year-sub">Meer met dezelfde<br>organisatie.</div>
+        </div>
+        <div class="year-col">
+          <div class="year-num">2027</div>
+          <div class="year-word">GAS.</div>
+          <div class="year-sub">Gaspedaal<br>verder intrappen.</div>
+        </div>
+      </div>
+
+      <div class="payoff-bottom">
+        Onze beste maand ooit was <span>mei 2025</span>.<br>
+        Midden in onze crisis.
+      </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 11 — KEY TAKEAWAY
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s11">
+      <div class="grain" style="opacity:0.06;"></div>
+
+      <img class="logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter" style="color:rgba(33,17,19,0.5);">KEY TAKEAWAY</div>
+
+      <img class="content-logo" src="./assets/Logo_wit@4x.png"
+           alt="BXC" onerror="this.style.display='none'">
+      <div class="eyebrow">Vergeet dit niet</div>
+      <div class="line1">GROEI MAAKT INDRUK.</div>
+      <div class="line2">WINST GEEFT JE TOEKOMST.</div>
+
+      <div class="divider-white"></div>
+      <div class="contact-list">
+        <div>
+          <div class="contact-icon">mail</div>
+          <div class="contact-val">joey@funcookingonline.nl</div>
+        </div>
+        <div>
+          <div class="contact-icon">insta</div>
+          <div class="contact-val">@bbqexperiencecenter</div>
+        </div>
+        <div>
+          <div class="contact-icon">in</div>
+          <div class="contact-val">joeybuys</div>
+        </div>
+        <div>
+          <div class="contact-icon">web</div>
+          <div class="contact-val">www.bbqexperiencecenter.nl · www.bbqexperiencecenter.be</div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /deck -->
+
+
+  <script>
+    const slides  = Array.from(document.querySelectorAll('.slide'));
+    const deck    = document.getElementById('deck');
+    const counter = document.getElementById('cur');
+    const progress = document.getElementById('progress');
+    const cursor  = document.getElementById('cursor');
+    const total   = slides.length;
+    let current   = 0;
+    let isAnimating = false;
+
+    /* ── 16:9 scale ─────────────────────────────────────────────────────── */
+    function scaleToFit() {
+      const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      deck.style.transform = `scale(${s})`;
+    }
+    window.addEventListener('resize', scaleToFit);
+    scaleToFit();
+
+    /* ── Navigation ─────────────────────────────────────────────────────── */
+    function goTo(n) {
+      if (isAnimating || n < 0 || n >= total) return;
+      isAnimating = true;
+      slides[current].classList.remove('active');
+      slides[n].classList.add('active');
+      current = n;
+      counter.textContent = current + 1;
+      progress.style.width = ((current + 1) / total * 100) + '%';
+      setTimeout(() => { isAnimating = false; }, 320);
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    document.addEventListener('click', (e) => {
+      e.clientX > window.innerWidth * 0.08 ? next() : prev();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (['ArrowRight', ' ', 'ArrowDown'].includes(e.key)) { e.preventDefault(); next(); }
+      if (['ArrowLeft',  'ArrowUp'].includes(e.key))         { e.preventDefault(); prev(); }
+    });
+
+    let tx = 0;
+    document.addEventListener('touchstart', (e) => { tx = e.touches[0].clientX; });
+    document.addEventListener('touchend',   (e) => {
+      const dx = e.changedTouches[0].clientX - tx;
+      if (Math.abs(dx) > 50) dx < 0 ? next() : prev();
+    });
+
+    /* ── Cursor ──────────────────────────────────────────────────────────── */
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+    });
+
+    /* ── Init ────────────────────────────────────────────────────────────── */
+    progress.style.width = (1 / total * 100) + '%';
+  </script>
+</body>
+</html>
