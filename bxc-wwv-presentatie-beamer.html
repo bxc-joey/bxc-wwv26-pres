@@ -164,8 +164,8 @@
       flex: 1;
       position: relative;
       background:
-        radial-gradient(ellipse at 60% 65%, rgba(90,35,10,0.55) 0%, rgba(33,17,19,0.97) 65%),
-        #211113;
+        linear-gradient(to right, rgba(33,17,19,0.92) 0%, rgba(33,17,19,0.6) 50%, rgba(33,17,19,0.35) 100%),
+        url('./assets/KFV_BBQ_Experience_Center_26-07-2024_LR-8242.jpg') center center / cover no-repeat;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -173,7 +173,7 @@
     }
 
     .s1 .orange-eyebrow {
-      font: 700 12px/1 var(--heading);
+      font: 700 16px/1 var(--heading);
       letter-spacing: 0.3em;
       text-transform: uppercase;
       color: rgba(255,255,255,0.7);
@@ -213,8 +213,8 @@
     ═══════════════════════════════════════════════════════════════════════ */
     .s2 {
       background:
-        radial-gradient(ellipse at 20% 50%, rgba(120,50,10,0.55) 0%, rgba(33,17,19,1) 60%),
-        #211113;
+        linear-gradient(to right, rgba(33,17,19,0.97) 0%, rgba(33,17,19,0.85) 45%, rgba(33,17,19,0.3) 100%),
+        url('./assets/KFV_BBQ_Experience_Center_26-07-2024_LR-8169.jpg') center center / cover no-repeat;
       flex-direction: column;
       justify-content: center;
       padding: 96px 160px 80px;
@@ -246,10 +246,10 @@
     }
 
     .s2 .stat-label {
-      font: 300 14px/1.5 var(--body);
+      font: 400 20px/1.5 var(--body);
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: var(--mid-grey);
+      color: rgba(255,255,255,0.75);
       margin-top: 12px;
     }
 
@@ -261,16 +261,133 @@
 
 
     /* ═══════════════════════════════════════════════════════════════════════
+       SLIDE 2B — BXC Ecosysteem
+    ═══════════════════════════════════════════════════════════════════════ */
+    .s-eco {
+      background:
+        radial-gradient(ellipse at 10% 30%, rgba(120,50,10,0.5) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 80%, rgba(255,78,2,0.07) 0%, transparent 50%),
+        #211113;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 112px 64px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .s-eco .eco-ghost {
+      position: absolute;
+      font: 700 320px/0.85 var(--heading);
+      text-transform: uppercase;
+      letter-spacing: -8px;
+      color: rgba(255,78,2,0.05);
+      bottom: -16px;
+      right: -32px;
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+      z-index: 0;
+    }
+
+    .s-eco .eco-header {
+      position: relative;
+      z-index: 2;
+      margin-bottom: 56px;
+    }
+
+    .s-eco .eco-eyebrow {
+      font: 600 16px/1 var(--heading);
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 16px;
+    }
+
+    .s-eco .eco-headline {
+      font: 700 72px/1.02 var(--heading);
+      text-transform: uppercase;
+      color: var(--white);
+      letter-spacing: 1px;
+    }
+
+    .s-eco .eco-headline em { font-style: normal; color: var(--orange); }
+
+    .s-eco .eco-flow {
+      display: flex;
+      align-items: flex-start;
+      position: relative;
+      z-index: 2;
+    }
+
+    .s-eco .eco-flow::before {
+      content: '';
+      position: absolute;
+      top: 26px;
+      left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(to right, var(--orange) 0%, rgba(255,78,2,0.12) 100%);
+    }
+
+    .s-eco .eco-step {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding-right: 24px;
+    }
+
+    .s-eco .eco-step-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .s-eco .eco-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--orange);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .s-eco .eco-num {
+      font: 700 16px/1 var(--heading);
+      letter-spacing: 0.35em;
+      color: rgba(255,78,2,0.9);
+    }
+
+    .s-eco .eco-step-name {
+      font: 700 72px/1 var(--heading);
+      text-transform: uppercase;
+      color: var(--white);
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .s-eco .eco-pillar {
+      font: 700 16px/1 var(--heading);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--orange);
+    }
+
+    .s-eco .eco-desc {
+      font: 300 14px/1.5 var(--body);
+      color: rgba(255,255,255,0.45);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
        SLIDE 3 — De Verleiding
     ═══════════════════════════════════════════════════════════════════════ */
     .s3 {
       flex-direction: column;
-      justify-content: flex-end;
-      padding: 0 0 120px 160px;
+      justify-content: center;
+      padding: 0 0 0 160px;
       position: relative;
       background:
-        radial-gradient(ellipse at 75% 40%, rgba(120,50,10,0.55) 0%, rgba(33,17,19,1) 60%),
-        #211113;
+        radial-gradient(ellipse at 0% 100%, rgba(33,17,19,0.97) 0%, rgba(33,17,19,0.6) 45%, rgba(33,17,19,0.05) 75%),
+        url('./assets/BBQ_Experience_Festival_075_C1A8803 (1).jpg') center center / cover no-repeat;
     }
 
     .s3 .ghost-text {
@@ -280,7 +397,7 @@
       font: 700 320px/1 var(--heading);
       text-transform: uppercase;
       letter-spacing: -0.04em;
-      color: rgba(255,78,2,0.18);
+      color: rgba(255,78,2,0.25);
       pointer-events: none;
       user-select: none;
       white-space: nowrap;
@@ -289,7 +406,7 @@
 
     .s3 .tag {
       font: 700 16px/1 var(--heading);
-      letter-spacing: 0.35em;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--orange);
       margin-bottom: 24px;
@@ -308,7 +425,7 @@
 
     .s3 .accent {
       font: 600 20px/1 var(--heading);
-      letter-spacing: 0.2em;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--orange);
       position: relative; z-index: 2;
@@ -357,7 +474,7 @@
 
     .s4 .date-text {
       font: 600 16px/1 var(--heading);
-      letter-spacing: 0.3em;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--orange);
     }
@@ -375,8 +492,8 @@
     .s4 .main span { color: var(--orange); }
 
     .s4 .sub {
-      font: 300 18px/1.7 var(--body);
-      color: var(--mid-grey);
+      font: 400 22px/1.7 var(--body);
+      color: rgba(255,255,255,0.75);
       max-width: 40ch;
       position: relative; z-index: 2;
     }
@@ -419,7 +536,7 @@
       margin-top: 40px;
       margin-bottom: 20px;
       font: 700 16px/1 var(--heading);
-      letter-spacing: 6px;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--orange);
       display: flex;
@@ -442,7 +559,7 @@
 
     .s5 .pill {
       font: 600 14px/1 var(--heading);
-      letter-spacing: 0.2em;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       padding: 10px 20px;
       border: 1px solid rgba(255,78,2,0.35);
@@ -478,8 +595,8 @@
 
     .s6 .sub {
       margin-top: 48px;
-      font: 300 18px/1.6 var(--body);
-      color: rgba(33,17,19,0.65);
+      font: 400 22px/1.6 var(--body);
+      color: rgba(33,17,19,0.9);
       letter-spacing: 0.05em;
     }
 
@@ -503,7 +620,7 @@
       right: 48px; top: 50%;
       transform: translateY(-50%);
       font: 700 352px/1 var(--heading);
-      color: rgba(255,78,2,0.18);
+      color: rgba(255,78,2,0.25);
       pointer-events: none;
       user-select: none;
       z-index: 0;
@@ -511,7 +628,7 @@
 
     .s-insight .insight-num {
       font: 700 16px/1 var(--heading);
-      letter-spacing: 0.35em;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--orange);
       margin-bottom: 24px;
@@ -538,8 +655,8 @@
     .s-insight .main em { font-style: normal; color: var(--orange); }
 
     .s-insight .sub {
-      font: 300 17px/1.75 var(--body);
-      color: var(--mid-grey);
+      font: 400 22px/1.75 var(--body);
+      color: rgba(255,255,255,0.75);
       max-width: 48ch;
       position: relative; z-index: 2;
     }
@@ -558,53 +675,92 @@
         #211113;
     }
 
-    .s10 .title {
-      font: 700 38px/1.1 var(--heading);
+    .s10 .s10-label {
+      font: 700 16px/1 var(--heading);
+      letter-spacing: 0.15em;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
       color: var(--orange);
       margin-bottom: 48px;
     }
 
-    .s10 .years { display: flex; gap: 0; align-items: stretch; margin-bottom: 56px; }
+    .s10 .timeline {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      margin-bottom: 64px;
+      position: relative;
+    }
 
-    .s10 .year-col {
+    .s10 .timeline::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(to right, var(--orange) 0%, rgba(255,78,2,0.12) 100%);
+    }
+
+    .s10 .phase {
       flex: 1;
-      padding: 40px 32px;
-      border-left: 1px solid rgba(177,165,165,0.15);
+      padding-right: 48px;
+      display: flex;
+      flex-direction: column;
     }
 
-    .s10 .year-col:first-child { border-left: none; }
-
-    .s10 .year-num {
-      font: 700 24px/1 var(--heading);
-      letter-spacing: 0.1em;
-      color: var(--orange);
-      margin-bottom: 12px;
+    .s10 .phase-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
     }
 
-    .s10 .year-word {
-      font: 700 56px/1 var(--heading);
+    .s10 .phase-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--orange);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .s10 .phase-year {
+      font: 700 16px/1 var(--heading);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,78,2,0.9);
+    }
+
+    .s10 .phase-word {
+      font: 700 72px/0.95 var(--heading);
       text-transform: uppercase;
       color: var(--white);
-      letter-spacing: -0.01em;
+      letter-spacing: -0.02em;
     }
 
-    .s10 .year-sub {
-      font: 300 14px/1.5 var(--body);
-      color: var(--mid-grey);
-      margin-top: 12px;
-      letter-spacing: 0.05em;
+    .s10 .phase:last-child .phase-word { color: var(--white); }
+
+    .s10 .callout {
+      border-left: 4px solid var(--orange);
+      padding-left: 28px;
     }
 
-    .s10 .payoff-bottom {
-      font: 700 48px/1.15 var(--heading);
+    .s10 .callout-main {
+      font: 700 40px/1.15 var(--heading);
       text-transform: uppercase;
       color: var(--white);
-      letter-spacing: 0.02em;
+      letter-spacing: 0.01em;
     }
 
-    .s10 .payoff-bottom span { color: var(--orange); }
+    .s10 .callout-main span { color: var(--orange); }
+
+    .s10 .callout-sub {
+      font: 400 20px/1.5 var(--body);
+      color: rgba(255,255,255,0.65);
+      margin-top: 8px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
 
 
     /* ═══════════════════════════════════════════════════════════════════════
@@ -659,7 +815,7 @@
 
     .s11 .contact-list {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: auto auto;
       gap: 20px 48px;
     }
 
@@ -693,7 +849,7 @@
     <!-- Persistent UI — inside deck so they scale with it -->
     <div class="progress" id="progress"></div>
     <div class="ui-tagline">your bbq best friend</div>
-    <div class="ui-counter"><span id="cur">1</span> / 11</div>
+    <div class="ui-counter"><span id="cur">1</span> / 12</div>
 
 
     <!-- ════════════════════════════════════════════════════════════════════
@@ -753,6 +909,51 @@
 
 
     <!-- ════════════════════════════════════════════════════════════════════
+         SLIDE 2B — BXC ECOSYSTEEM
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="slide s-eco">
+      <div class="grain"></div>
+      <div class="eco-ghost">JOURNEY</div>
+
+      <img class="logo" src="./assets/Logo_wit@4x.png" alt="BXC" onerror="this.style.display='none'">
+      <div class="chapter">INTRO</div>
+
+      <div class="eco-header">
+        <div class="eco-eyebrow">Het BXC Ecosysteem</div>
+        <div class="eco-headline">DE VOLLEDIGE <em>CUSTOMER JOURNEY.</em></div>
+      </div>
+
+      <div class="eco-flow">
+        <div class="eco-step">
+          <div class="eco-step-top"><div class="eco-dot"></div><div class="eco-num">01</div></div>
+          <div class="eco-step-name">Product</div>
+          <div class="eco-pillar">Trading</div>
+        </div>
+        <div class="eco-step">
+          <div class="eco-step-top"><div class="eco-dot"></div><div class="eco-num">02</div></div>
+          <div class="eco-step-name">Content</div>
+          <div class="eco-pillar">Publishing</div>
+        </div>
+        <div class="eco-step">
+          <div class="eco-step-top"><div class="eco-dot"></div><div class="eco-num">03</div></div>
+          <div class="eco-step-name">Experience</div>
+          <div class="eco-pillar">Experience Centers</div>
+        </div>
+        <div class="eco-step">
+          <div class="eco-step-top"><div class="eco-dot"></div><div class="eco-num">04</div></div>
+          <div class="eco-step-name">Commerce</div>
+          <div class="eco-pillar">E-commerce</div>
+        </div>
+        <div class="eco-step">
+          <div class="eco-step-top"><div class="eco-dot"></div><div class="eco-num">05</div></div>
+          <div class="eco-step-name">Loyalty</div>
+          <div class="eco-pillar">BBQ Best Friend</div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
          SLIDE 3 — DE VERLEIDING
     ════════════════════════════════════════════════════════════════════ -->
     <section class="slide s3">
@@ -785,7 +986,6 @@
       </div>
 
       <div class="main">WE GINGEN<br>VERLIES<br>MAKEN.<br><span>EN DIK OOK.</span></div>
-      <div class="sub">Kunnen we de salarissen nog betalen? Gaan we failliet? Pff al de gezinnen van mijn collega's..</div>
     </section>
 
 
@@ -824,7 +1024,6 @@
 
       <div class="giant">GRILL</div>
       <div class="giant-dark">&amp; SAVE.</div>
-      <div class="sub" style="margin-left:10px;">Kosten omlaag. Marge omhoog. Eigenlijk best simpel 😉</div>
     </section>
 
 
@@ -841,7 +1040,6 @@
       <div class="insight-num">Inzicht 01 / 03</div>
       <div class="divider"></div>
       <div class="main">WINST IS GEEN<br>MANAGEMENT TAAK.<br>HET IS <em>GEDRAG</em>.</div>
-      <div class="sub">Iedereen in de organisatie is verantwoordelijk en moet bewust zijn voor succes. Dat vergt aanpassingsvermogen.</div>
     </section>
 
 
@@ -858,7 +1056,6 @@
       <div class="insight-num">Inzicht 02 / 03</div>
       <div class="divider"></div>
       <div class="main">ONZEKERHEID<br><em>SLOOPT</em><br>ENERGIE.<br>TRANSPARANTIE<br>GEEFT RUST.</div>
-      <div class="sub">Communiceer open met iedereen: je collega's, leveranciers, financierders en niet in laatste plaats je persoonlijke omgeving.</div>
     </section>
 
 
@@ -875,7 +1072,6 @@
       <div class="insight-num">Inzicht 03 / 03</div>
       <div class="divider"></div>
       <div class="main">SOMMIGE<br>WINSTGEVENDE<br>IDEEËN <em>KOSTEN</em><br>JE ORGANISATIE<br><em>MEER</em> DAN ZE<br>OPLEVEREN.</div>
-      <div class="sub">Kies de juiste metrics, niet alles is ROI.</div>
     </section>
 
 
@@ -889,29 +1085,35 @@
            alt="BXC" onerror="this.style.display='none'">
       <div class="chapter">DE PAYOFF</div>
 
-      <div class="title">Drie jaar. Drie fases.</div>
+      <div class="s10-label">Drie jaar — drie fases</div>
 
-      <div class="years">
-        <div class="year-col">
-          <div class="year-num">2025</div>
-          <div class="year-word">GEZOND.</div>
-          <div class="year-sub">Financieel herstel.<br>Goed afgesloten.</div>
+      <div class="timeline">
+        <div class="phase">
+          <div class="phase-header">
+            <div class="phase-dot"></div>
+            <div class="phase-year">2025</div>
+          </div>
+          <div class="phase-word">Gezond<br>worden.</div>
         </div>
-        <div class="year-col">
-          <div class="year-num">2026</div>
-          <div class="year-word">MEER.</div>
-          <div class="year-sub">Meer met dezelfde<br>organisatie.</div>
+        <div class="phase">
+          <div class="phase-header">
+            <div class="phase-dot"></div>
+            <div class="phase-year">2026</div>
+          </div>
+          <div class="phase-word">Slim<br>schalen.</div>
         </div>
-        <div class="year-col">
-          <div class="year-num">2027</div>
-          <div class="year-word">GAS.</div>
-          <div class="year-sub">Gaspedaal<br>verder intrappen.</div>
+        <div class="phase">
+          <div class="phase-header">
+            <div class="phase-dot"></div>
+            <div class="phase-year">2027</div>
+          </div>
+          <div class="phase-word">Grenzen<br>verleggen.</div>
         </div>
       </div>
 
-      <div class="payoff-bottom">
-        Onze beste maand ooit was <span>mei 2025</span>.<br>
-        Midden in onze crisis.
+      <div class="callout">
+        <div class="callout-main">Onze beste maand ooit was <span>mei 2025</span>.</div>
+        <div class="callout-sub">Midden in onze crisis.</div>
       </div>
     </section>
 
