@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>WWV Spiekbriefjes — Joey</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #ccc;
+      font-family: Georgia, serif;
+    }
+
+    /* A4 landscape page: 4 A6 landscape cards (2 columns × 2 rows) */
+    .page {
+      width: 297mm;
+      height: 210mm;
+      margin: 10mm auto;
+      background: white;
+      display: grid;
+      grid-template-columns: 148mm 148mm;
+      grid-template-rows: 105mm 105mm;
+    }
+
+    /* A6 landscape card = 148mm × 105mm */
+    .card {
+      width: 148mm;
+      height: 105mm;
+      padding: 7mm 8mm;
+      border: 0.5px solid #ccc;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      gap: 4mm;
+      overflow: hidden;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: baseline;
+      gap: 3mm;
+      padding-bottom: 3mm;
+      border-bottom: 1.5px solid #111;
+    }
+
+    .card-num {
+      font-family: Arial, sans-serif;
+      font-size: 10pt;
+      font-weight: bold;
+      color: #888;
+      flex-shrink: 0;
+    }
+
+    .card-title {
+      font-family: Arial, sans-serif;
+      font-size: 13pt;
+      font-weight: bold;
+      color: #111;
+      line-height: 1.1;
+    }
+
+    .card-body ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5mm;
+    }
+
+    .card-body li {
+      font-family: Arial, sans-serif;
+      font-size: 11pt;
+      line-height: 1.35;
+      color: #111;
+      padding-left: 5mm;
+      position: relative;
+    }
+
+    .card-body li::before {
+      content: '–';
+      position: absolute;
+      left: 0;
+      color: #555;
+    }
+
+    /* Statement card (last) */
+    .card.statement .card-title { font-size: 12pt; }
+    .card.statement .quote {
+      font-family: Arial, sans-serif;
+      font-size: 15pt;
+      font-weight: bold;
+      line-height: 1.25;
+      color: #111;
+      margin-bottom: 3mm;
+    }
+
+    /* Print */
+    @media print {
+      body { background: white; }
+      .page { margin: 0; }
+      .card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+
+    /* Back page */
+    .back {
+      width: 297mm;
+      height: 210mm;
+      margin: 10mm auto;
+      background: white;
+      display: grid;
+      grid-template-columns: 148mm 148mm;
+      grid-template-rows: 105mm 105mm;
+    }
+
+    .back-card {
+      width: 148mm;
+      height: 105mm;
+      border: 0.5px solid #ccc;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back-card img {
+      width: 55mm;
+      height: auto;
+      transform: rotate(180deg);
+    }
+
+    @page { size: A4 landscape; margin: 0; }
+  </style>
+</head>
+<body>
+
+<!-- PAGE 1: slides 1–4 -->
+<div class="page">
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-num">01</span>
+      <span class="card-title">Opening</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li>Hoi ik ben Joey — mijn onderneming zit bij Bijzonder Beheer van de bank</li>
+        <li>Zit er nog iemand in de zaal bij bijzonder beheer?</li>
+        <li>Al 5 jaar bij de WWV — ook actief in andere media (mentor, NL Groeit)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-num">02</span>
+      <span class="card-title">Intro — Het verhaal</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li>Achtertuin verhaal — zo is het begonnen</li>
+        <li>Missie: mensen helpen bij hun outdoor cooking adventure</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-num">03</span>
+      <span class="card-title">Intro — Ecosysteem</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li>Volledige customer journey afgedekt</li>
+        <li>Van productontwikkeling → fysieke experience → BBQ Best Friend</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-num">04</span>
+      <span class="card-title">De Verleiding</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li>Alles wat je aanraakt verandert in goud — sky is the limit</li>
+        <li>40% groei jaar op jaar</li>
+        <li>Investeringen onderbouwd met business cases</li>
+        <li>Focus op kansen, expansie, Black Friday en volume</li>
+        <li>Meer is beter toch? → [pause]</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- BACK 1 -->
+<div class="back">
+  <div class="back-card"><img src="./assets/BBQ Experience Center main logo.png" alt="BXC"></div>
+  <div class="back-card"><img src="./assets/BBQ Experience Center main logo.png" alt="BXC"></div>
+  <div class="back-card"><img src="./assets/BBQ Experience Center main logo.png" alt="BXC"></div>
+  <div class="back-card"><img src="./assets/BBQ Experience Center main logo.png" alt="BXC"></div>
+</div>
+
+<!-- PAGE 2: slides 5–8 -->
+<div class="page">
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-num">05</span>
+      <span class="card-title">De Crash</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li>Eind '24 / begin '25: out of the blue → verlies maken (twv een mooie villa)</li>
+        <li>Grond zakt weg: salarissen? Faillissement? Al die gezinnen!</li>
+        <li>Direct liquiditeitsprobleem</li>
+        <li>Geen paniek, maar verwarring — we doen toch alles goed?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-num">06</span>
+      <span class="card-title">De Realisatie</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li>We sturen op omzet, niet op waarde — stuurden blind</li>
+        <li>Perfect storm: overhead gegroeid, meeprijzen, wisselingen in finance</li>
+        <li>Verlies is ok — maar niet georganiseerd</li>
+        <li>We gaan dit turnen → projectteam</li>
+        <li>Direct: belasting pauzeren + leveranciers bellen</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="padding: 5mm 7mm; gap: 2mm;">
+    <div class="card-header">
+      <span class="card-num">07</span>
+      <span class="card-title">Het Plan — Grill &amp; Save</span>
+    </div>
+    <div class="card-body">
+      <ul style="gap: 1.5mm;">
+        <li style="font-size: 9.5pt;">Iedere steen gaat ondersteboven — een jaar de tijd</li>
+        <li style="font-size: 9.5pt;">Radicale focus op marge-KPI's: brutomarge &amp; EBITDA</li>
+        <li style="font-size: 9.5pt;">Geen korting meer + strategische prijs- &amp; assortimentswijzigingen</li>
+        <li style="font-size: 9.5pt;">Raamcontracten leveranciers</li>
+        <li style="font-size: 9.5pt;">Verzendkosten verlaagd via multi-carrier checkout</li>
+        <li style="font-size: 9.5pt;">Vacaturestop + processen verbeterd</li>
+        <li style="font-size: 9.5pt;">Kill your darlings: catering, festivals, Black Friday</li>
+        <li style="font-size: 9.5pt;">Dat schuurt → jaren werk gestopt (→ Wesley straks)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-num">08</span>
+      <span class="card-title">Inzicht 1 — Eigenaarschap</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li>Iedereen verantwoordelijk voor succes</li>
+        <li>Vergt aanpassingsvermogen (kernwaarde)</li>
+        <li>Groei was nooit een doel — maar wél de motor van veel mensen</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- BACK 2 -->
+<div class="back">
+  <div class="back-card"><img src="./assets/BBQ Experience Center main logo.png" alt="BXC"></div>
+  <div class="back-card"><img src="./assets/BBQ Experience Center main logo.png" alt="BXC"></div>
+  <div class="back-card"><img src="./assets/BBQ Experience Center main logo.png" alt="BXC"></div>
+  <div class="back-card"><img src="./assets/BBQ Experience Center main logo.png" alt="BXC"></div>
+</div>
+
+<!-- PAGE 3: slides 9–12 -->
+<div class="page">
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-num">09</span>
+      <span class="card-title">Inzicht 2 — Communicatie</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li>Communiceer open — collega's, leveranciers, financiers, privé</li>
+        <li>Liquiditeitskrapte is normaal bij snelle groei</li>
+        <li>Pas op bij banken: versie A én B werkt niet</li>
+        <li>Intern: kwartaalsessies + video-updates met versimpelde P&amp;L</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-num">10</span>
+      <span class="card-title">Inzicht 3 — Juiste KPI's</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li>Wat je meet wordt belangrijk — kies bewust</li>
+        <li>Niet alleen ROI: ook team, complexiteit, cash</li>
+        <li>Juiste mensen → juiste inzichten → juiste tooling (BigQuery / PowerBI / Eyk)</li>
+        <li>Ritme: van geen inzicht → maandelijks → realtime</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-num">11</span>
+      <span class="card-title">De Payoff</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li>2025 goed afgesloten — 2026 YTD beter dan 2025</li>
+        <li>Strategie 2026 / 2027</li>
+        <li>Beste maand ooit: niet Black Friday, maar mei 2025 (midden in de crisis)</li>
+        <li>Betere mensen: investeer er vroeg in</li>
+        <li>Bank past niet bij ons → crowdfunding, investeerder</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card statement">
+    <div class="card-header">
+      <span class="card-num">12</span>
+      <span class="card-title">Key Takeaway</span>
+    </div>
+    <div class="card-body">
+      <p class="quote">Groei maakt indruk.<br>Winst geeft je toekomst.</p>
+      <ul>
+        <li>Dit is wat ik jullie wilde meegeven</li>
+        <li>Community table</li>
+        <li>Dankjewel</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- BACK 3 -->
+<div class="back">
+  <div class="back-card"><img src="./assets/BBQ Experience Center main logo.png" alt="BXC"></div>
+  <div class="back-card"><img src="./assets/BBQ Experience Center main logo.png" alt="BXC"></div>
+  <div class="back-card"><img src="./assets/BBQ Experience Center main logo.png" alt="BXC"></div>
+  <div class="back-card"><img src="./assets/BBQ Experience Center main logo.png" alt="BXC"></div>
+</div>
+
+</body>
+</html>
